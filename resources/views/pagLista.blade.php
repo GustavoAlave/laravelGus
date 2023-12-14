@@ -1,111 +1,102 @@
 @extends('pagPlantilla')
 
 @section('titulo')
-    <h1 class="display-4">PAGINA DE LISTA </h1>
+  <h1 class="display-4">Pagina Lista - Alex Acsara</h1>
 @endsection
 
 @section('seccion')
-    @if(session('msj'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('msj')}}
-        </div>
-    @endif
 
-    <form action="{{ route('Estudiante.xRegistrar')}}" method="post" class="d-grid gap-2">
-        @csrf
+  @if(session('msj'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ session('msj') }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" arial-label="close"></button>
+    </div>
+  @endif
 
-        @error('codEst')
-            <div class="alert alert-danger">
-                Codigo Requerido
-            </div>
-        @enderror
+  <form action="{{ route('Estudiante.xRegistrar') }}" method="POST">
+    @csrf
 
-        @error('nomEst')
-            <div class="alert alert-danger">
-                Nombre Requerido
-            </div>
-        @enderror
+    @error('codEst')
+      <div class="alert alert-danger">
+        El código es requerido,
+      </div>
+    @enderror
 
-        @error('apeEst')
-            <div class="alert alert-danger">
-                Apellido Requerido
-            </div>
-        @enderror
+    @error('nomEst')
+      <div class="alert alert-danger">
+        El nombre es requerido,
+      </div>
+    @enderror
 
-        @error('fnaEst')
-            <div class="alert alert-danger">
-                Fecha de nacimiento requerido
-            </div>
-        @enderror
-        @error('turnMat')
-            <div class="alert alert-danger">
-                Turno Requerido
-            </div>
-        @enderror
-        @error('semMat')
-            <div class="alert alert-danger">
-                Semestre requerido
-            </div>
-        @enderror
-        @error('estMat')
-            <div class="alert alert-danger">
-                estado requerido
-            </div>
-        @enderror
+    <input type="text" name="codEst" value="{{ old('codEst') }}" placeholder="Código" class="form-control mb-2">
+    <input type="text" name="nomEst" value="{{ old('nomEst') }}" placeholder="Nombres" class="form-control mb-2">
+    <input type="text" name="apeEst" value="{{ old('apeEst') }}" placeholder="Apellidos" class="form-control mb-2">
+    <input type="date" name="fnaEst" value="{{ old('fnaEst') }}" placeholder="Fecha Nac." class="form-control mb-2">
 
-        <input type="text" name="codEst" placeholder="Código" value="{{ old('codEst')}}" class="form-control mb-2">
-        <input type="text" name="nomEst" placeholder="Nombres" value="{{ old('nomEst')}}" class="form-control mb-2">
-        <input type="text" name="apeEst" placeholder="Apellidos" value="{{ old('apeEst')}}" class="form-control mb-2">
-        <input type="date" name="fnaEst" placeholder="Fecha de nacimiento" value="{{ old('fnaEst')}}" class="form-control mb-2">
-        <select name="turnMat" class="form-control mb-2">
-            <option value="">Seleccione...</option>
-            <option value="1">Turno Día</option>
-            <option value="2">Turno Noche</option>
-            <option value="3">Turno Tarde</option>
-        </select>
-        <select name="semMat" class="form-control mb-2">
-            <option value="">Seleccione...</option>
-            @for($i=1; $i < 7; $i++)
-                <option value="{{$i}}">Semestre {{$i}}</option>
-            @endfor
-        </select>
-        <select name="estMat" class="form-control mb-2">
-            <option value="">Seleccione...</option>
-            <option value="0">Inactivo</option>
-            <option value="1">Activo</option>
-        </select>
-        <button class="btn btn-success" type="submit">Agregar</button>
-    </form>
+    <select name="turMat" class="form-control mb-2">
+      <option value="">Seleccione...</option>
+      <option value="1">Turno Día</option>
+      <option value="2">Turno Noche</option>
+      <option value="3">Turno Tarde</option>
+    </select>
 
-    <br/>
+    <select name="semMat" class="form-control mb-2">
+      <option name="">Seleccione...</option>
+        @for($i=1; $i < 7; $i++)
+          <option value="{{$i}}">Semestre {{$i}}</option>
+        @endfor
+    </select>
 
-    <div class="btn btn-dark fs-3 fw-bold d-grid"> Lista de siguimiento</div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Codigo</th>
-                <th scope="col">Apellidos y Nombres</th>
-                <th scope="col">Handle</th>
-            </tr>
-        </thead>
-        <tbody>
+    <select name="estMat" class="form-control mb-2">
+      <option value="">Seleccione...</option>
+      <option value="0">Inactivo</option>
+      <option value="1">Activo</option>
+    </select>
+
+    <button class="btn btn-primary btn-block" type="submit">Agregar</button>
+  </form>
+  <br />
+
+  <div class="btn btn-dark fs-3 fw-bold d-grid">Lista de seguimiento</div>
+  <br />
+
+  <table class="table">
+    <thead>
+      <tr class="table-dark">
+        <th scope="col">#</th>
+        <th scope="col">First</th>
+        <th scope="col">Last</th>
+        <th scope="col">Handle</th>
+      </tr>
+    </thead>
+
+    @foreach($xAlumnos as $item)
     
+    <tbody>
+      <tr>
+        <th scope="row">{{ $item ->id }}</th>
+        <td>{{ $item ->codEst }}</td>
+        <td>
+          <a href="{{ route('Estudiante.xDetalle', $item->id ) }}">
+            {{ $item ->apeEst }}, {{ $item ->nomEst }}
+          </a>
+        </td>
+        <td>
+          <form action="{{ route('Estudiante.xEliminar', $item->id) }}" method="post" class="d-inline">
+            @method('DELETE')
+            @csrf
+            <button type="submit" class="btn btn-danger btn-sm">x</button>
+          </form>
+          
+          <a href="{{ route('Estudiante.xActualizar', $item->id ) }}" class="btn btn-warning btn-sm">
+            ...A 
+          </a>
+        </td>
+      </tr>
+    </tbody>
 
-            @foreach($xAlumnos as $item)
-            <tr>
-                <th scope="row">{{ $item->id}}</th>
-                <td>{{ $item->codEst}}</td>
-                <td>
-                    <a href="{{ route('Estudiante.xDetalle', $item->id) }}"> 
-                        {{ $item -> apeEst }} - {{ $item -> nomEst }} 
-                    </a>
+    @endforeach
 
-                </td>
-
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-
+  </table>
+ 
 @endsection

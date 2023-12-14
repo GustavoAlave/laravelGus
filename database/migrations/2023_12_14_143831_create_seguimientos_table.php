@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('estudiantes', function (Blueprint $table) {
+        Schema::create('seguimientos', function (Blueprint $table) {
             $table->id();
-            $table->string('codEst');
-            $table->string('nomEst');
-            $table->string('apeEst');
-            $table->date('fnaEst');
-            $table->integer('turnMat'); //1,2,3
-            $table->integer('semMat');  //1-6
-            $table->integer('estMat');  //0,1
+            $table->integer('idEst');
+            $table->string('traAct');
+            $table->string('ofiAct');
+            $table->integer('satEst');
+            $table->date('fecSeg');
+            $table->integer('estSeg');
             $table->timestamps();
         });
     }
@@ -29,6 +28,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('estudiantes');
+        Schema::dropIfExists('seguimientos');
     }
 };
+
